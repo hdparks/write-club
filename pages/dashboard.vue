@@ -10,9 +10,9 @@
 	</div>
 </template>
 <script setup lang="ts">
-import type { WritingPrompt } from '~/server/db/schema';
+import type { Challenge } from '~/server/db/schema';
 
-const prompts = ref<WritingPrompt[]>([])
+const prompts = ref<Challenge[]>([])
 onMounted(async () => {
   prompts.value = await getMyTaggedPrompts()
 })

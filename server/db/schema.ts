@@ -5,44 +5,56 @@ export const users = sqliteTable("users", {
   id: int().primaryKey({ autoIncrement: true }),
   name: text().notNull(),
   email: text().notNull().unique(),
-  picture: text()
+  picture: text(),
 });
 export type User = typeof users.$inferSelect
 export type UserInsert = typeof users.$inferInsert
 
 export const usersRelations = relations(users, ({many}) => ({
-  writingPromptTaggedUsers: many(writingPromptTaggedUsers),
+  challengeTaggedUsers: many(challengeTaggedUsers),
+  stubs: many(stubs),
+  challenges: many(challenges)
 }))
 
-export const writingPrompts = sqliteTable("writing_prompts", {
+export const challenges = sqliteTable("challenges", {
   id: int().primaryKey({ autoIncrement: true }),
+  challengerId: int().notNull(),
   name: text().notNull(),
-});
-export type WritingPrompt = typeof writingPrompts.$inferSelect
-export type WritingPromptInsert = typeof writingPrompts.$inferInsert
+})
 
-export const writingPromptRelations = relations(writingPrompts, ({many}) => ({
-  writingPromptTaggedUsers: many(writingPromptTaggedUsers),
+export type Challenge = typeof challenges.$inferSelect
+export type ChallengeInsert = typeof challenges.$inferInsert
+
+export const challengeRelations = relations(challenges, ({many, one}) => ({
+  challengeTaggedUsers: many(challengeTaggedUsers),
+  challenger: one(users, {
+    fields: [challenges.challengerId],
+    references: [users.id]
+  })
 }))
+export type ChallengeRelations = {
+  challengeTaggedUsers: User[],
+  challenger: User
+}
 
-export const writingPromptTaggedUsers = sqliteTable("writing_prompt_tagged_users", {
+export const challengeTaggedUsers = sqliteTable("challenges_tagged_users", {
   userId: int().references(() => users.id),
-  promptId: int().references(() => writingPrompts.id),
+  challengeId: int().references(() => challenges.id),
 },
-  (t) => [primaryKey({columns: [t.userId, t.promptId]})],
+  (t) => [primaryKey({columns: [t.userId, t.challengeId]})],
 )
 
-export type WritingPromptTaggedUser = typeof writingPromptTaggedUsers.$inferSelect
-export type WritingPromptTaggedUserInsert = typeof writingPromptTaggedUsers.$inferInsert
+export type ChallengeTaggedUser = typeof challengeTaggedUsers.$inferSelect
+export type ChallengeTaggedUserInsert = typeof challengeTaggedUsers.$inferInsert
 
-export const writingPromptTaggedUsersRelations = relations(writingPromptTaggedUsers, ({one}) => ({
+export const challengeTaggedUsersRelations = relations(challengeTaggedUsers, ({one}) => ({
   user: one(users, {
-    fields: [writingPromptTaggedUsers.userId],
+    fields: [challengeTaggedUsers.userId],
     references: [users.id]
   }),
-  writingPrompt: one(writingPrompts, {
-    fields: [writingPromptTaggedUsers.promptId],
-    references: [writingPrompts.id]
+  challenge: one(challenges, {
+    fields: [challengeTaggedUsers.challengeId],
+    references: [challenges.id]
   })
 }))
 
@@ -54,9 +66,50 @@ export const stories = sqliteTable("stories", {
 export type Story = typeof stories.$inferSelect
 export type StoryInsert = typeof stories.$inferInsert
 
-export const chapter = sqliteTable("chapter", {
-  id: int().primaryKey({ autoIncrement: true }),
+export const storiesRelations = relations(stories, ({many}) => ({
+  stubsToStories: many(stubsToStories)
+}))
+
+export const stubs = sqliteTable("stubs", {
+  id: int().primaryKey({autoIncrement: true}),
+  authorId: int().notNull(),
   name: text().notNull(),
+  text: text().notNull()
 })
 
+export type Stub = typeof stubs.$inferSelect
+export type StubInsert = typeof stubs.$inferInsert
 
+export const stubsRelations = relations(stubs, ({many, one}) => ({
+  stubsToStories: many(stubsToStories),
+  author: one(users, {
+    fields: [stubs.authorId],
+    references: [users.id]
+  })
+}))
+
+export const stubsToStories = sqliteTable(
+  'stubs_to_stories',
+  {
+    stubId: int()
+      .notNull()
+      .references(() => stubs.id),
+    storyId: int()
+      .notNull()
+      .references(() => stories.id)
+  },
+  (t) => [
+    primaryKey({columns: [t.stubId, t.storyId]})
+  ]
+)
+
+export const stubsToStoriesRelations = relations(stubsToStories, ({one}) => ({
+  stub: one(stubs, {
+    fields: [stubsToStories.stubId],
+    references: [stubs.id]
+  }),
+  story: one(stories, {
+    fields: [stubsToStories.storyId],
+    references: [stories.id]
+  })
+}))

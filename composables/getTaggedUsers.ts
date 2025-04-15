@@ -1,3 +1,3 @@
 export default function(id: number) {
-  return $fetch(`/api/prompts/${id}/tagged-users`)
+  return $fetch(`/api/challenges/${id}/tagged-users`)
 }
