@@ -12,7 +12,7 @@ export type UserInsert = typeof users.$inferInsert
 
 export const usersRelations = relations(users, ({many}) => ({
   challengeTaggedUsers: many(challengeTaggedUsers),
-  stubs: many(stubs),
+  posts: many(posts),
   challenges: many(challenges)
 }))
 
@@ -33,7 +33,7 @@ export const challengeRelations = relations(challenges, ({many, one}) => ({
   })
 }))
 export type ChallengeRelations = {
-  challengeTaggedUsers: User[],
+  challengeTaggedUsers: ChallengeTaggedUser[],
   challenger: User
 }
 
@@ -67,49 +67,49 @@ export type Story = typeof stories.$inferSelect
 export type StoryInsert = typeof stories.$inferInsert
 
 export const storiesRelations = relations(stories, ({many}) => ({
-  stubsToStories: many(stubsToStories)
+  postsToStories: many(postsToStories)
 }))
 
-export const stubs = sqliteTable("stubs", {
+export const posts = sqliteTable("posts", {
   id: int().primaryKey({autoIncrement: true}),
   authorId: int().notNull(),
   name: text().notNull(),
   text: text().notNull()
 })
 
-export type Stub = typeof stubs.$inferSelect
-export type StubInsert = typeof stubs.$inferInsert
+export type Post = typeof posts.$inferSelect
+export type PostInsert = typeof posts.$inferInsert
 
-export const stubsRelations = relations(stubs, ({many, one}) => ({
-  stubsToStories: many(stubsToStories),
+export const postsRelations = relations(posts, ({many, one}) => ({
+  stubsToStories: many(postsToStories),
   author: one(users, {
-    fields: [stubs.authorId],
+    fields: [posts.authorId],
     references: [users.id]
   })
 }))
 
-export const stubsToStories = sqliteTable(
-  'stubs_to_stories',
+export const postsToStories = sqliteTable(
+  'posts_to_stories',
   {
-    stubId: int()
+    postId: int()
       .notNull()
-      .references(() => stubs.id),
+      .references(() => posts.id),
     storyId: int()
       .notNull()
       .references(() => stories.id)
   },
   (t) => [
-    primaryKey({columns: [t.stubId, t.storyId]})
+    primaryKey({columns: [t.postId, t.storyId]})
   ]
 )
 
-export const stubsToStoriesRelations = relations(stubsToStories, ({one}) => ({
-  stub: one(stubs, {
-    fields: [stubsToStories.stubId],
-    references: [stubs.id]
+export const postsToStoriesRelations = relations(postsToStories, ({one}) => ({
+  post: one(posts, {
+    fields: [postsToStories.postId],
+    references: [posts.id]
   }),
   story: one(stories, {
-    fields: [stubsToStories.storyId],
+    fields: [postsToStories.storyId],
     references: [stories.id]
   })
 }))

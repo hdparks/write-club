@@ -1,16 +1,16 @@
 <template>
 	<UCard class="w-full">
     <template #header>
-      {{post?.name}}
+      {{stub?.name}}
     </template>
-    {{post?.text}}
+    {{stub?.text}}
 	</UCard>
 </template>
 <script setup lang="ts">
-import type { Post } from '~/server/db/schema';
+import type { Stub } from '~/server/db/schema';
 
 const route = useRoute()
 console.log(route)
-const {data:post} = await useFetch<Post>(`/api/posts/${route.params.id as string}`)
+const {data:stub} = await useFetch<Stub>(`/api/stubs/${route.params.id as string}`)
 </script>
 

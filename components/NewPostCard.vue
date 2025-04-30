@@ -7,7 +7,7 @@
     <template #footer>
       <UTooltip :disabled="loggedIn" :delay-duration="0">
         <template #content>
-          Please log in to publish a stub.
+          Please log in to publish a post.
         </template>
         <UButton @click="submit" :disabled="!loggedIn">Publish</UButton>
       </UTooltip>
@@ -15,15 +15,15 @@
 	</UCard>
 </template>
 <script setup lang="ts">
-import createStub from '~/composables/createStub';
+import createPost from '~/composables/createStub';
 
 const newName = ref<string>("")
 const newText = ref<string>("")
 
-const { loggedIn } = useUserSession()
+const { loggedIn, user } = useUserSession()
 
 async function submit() {
-  const result = await createStub(newName.value, newText.value)
+  const result = await createPost(newName.value, newText.value, user.value.id)
   console.log(result)
 }
 

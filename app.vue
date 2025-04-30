@@ -9,7 +9,7 @@
             </UDropdownMenu>
             {{user?.name}}
           </div>
-          <div v-else>Log in with <UBadge @click="openInPopup('/auth/google')"><UIcon name="i-uil-google"></UIcon> Google</UBadge></div>
+          <div v-else>Log in with <UBadge @click="openInPopup('/auth/google')" data-testid="google-sign-in"><UIcon name="i-uil-google"></UIcon> Google</UBadge></div>
         </div>
       </AuthState>
     </div>
@@ -49,10 +49,15 @@ const navigationItems = computed<NavigationMenuItem[][]>(() => {
       active: route.path == "/challenges",
       onSelect: async() => await navigateTo("/challenges")
     },{
+      label: "Outbox",
+      icon: "i-lucide:send",
+      active: route.path == "/outbox",
+      onSelect: async() => await navigateTo("/outbox")
+    },{
       label: "Posts",
       icon: "i-lucide:file-plus-2",
-      active: route.path == "/stub",
-      onSelect: async () => await navigateTo("/stub")
+      active: route.path == "/posts",
+      onSelect: async () => await navigateTo("/posts")
     }]]
   return sections
 })

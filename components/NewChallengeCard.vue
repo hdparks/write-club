@@ -33,7 +33,6 @@ const taggedUsers = ref<SelectItem & {user:User}[]>([])
 
 const {user} = useUserSession() 
 async function send(){
-
   const userId = user.value?.id
   if (userId == null) {
     useToast().add({id: "loginToPublish", title: "Please Log In to Publish Challenge"})

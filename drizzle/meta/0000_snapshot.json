@@ -1,0 +1,331 @@
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "prevId": "",
+  "version": "6",
+  "dialect": "sqlite",
+  "tables": {
+    "users": {
+      "name": "users",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "autoincrement": false,
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "picture": {
+          "autoincrement": false,
+          "name": "picture",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "columns": [
+            "email"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "stories": {
+      "name": "stories",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "posts": {
+      "name": "posts",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "text": {
+          "autoincrement": false,
+          "name": "text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "authorId": {
+          "autoincrement": false,
+          "name": "authorId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "stubs_to_stories": {
+      "name": "stubs_to_stories",
+      "columns": {
+        "stubId": {
+          "autoincrement": false,
+          "name": "stubId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "storyId": {
+          "autoincrement": false,
+          "name": "storyId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "stubs_to_stories_stubId_storyId_pk": {
+          "columns": [
+            "stubId",
+            "storyId"
+          ],
+          "name": "stubs_to_stories_stubId_storyId_pk"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "stubs_to_stories_storyId_stories_id_fk": {
+          "name": "stubs_to_stories_storyId_stories_id_fk",
+          "tableFrom": "stubs_to_stories",
+          "tableTo": "stories",
+          "columnsFrom": [
+            "storyId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "stubs_to_stories_stubId_posts_id_fk": {
+          "name": "stubs_to_stories_stubId_posts_id_fk",
+          "tableFrom": "stubs_to_stories",
+          "tableTo": "posts",
+          "columnsFrom": [
+            "stubId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "challenges": {
+      "name": "challenges",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "challengerId": {
+          "autoincrement": false,
+          "name": "challengerId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "challenges_tagged_users": {
+      "name": "challenges_tagged_users",
+      "columns": {
+        "userId": {
+          "autoincrement": false,
+          "name": "userId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "challengeId": {
+          "autoincrement": false,
+          "name": "challengeId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {
+        "challenges_tagged_users_userId_challengeId_pk": {
+          "columns": [
+            "userId",
+            "challengeId"
+          ],
+          "name": "challenges_tagged_users_userId_challengeId_pk"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "challenges_tagged_users_challengeId_challenges_id_fk": {
+          "name": "challenges_tagged_users_challengeId_challenges_id_fk",
+          "tableFrom": "challenges_tagged_users",
+          "tableTo": "challenges",
+          "columnsFrom": [
+            "challengeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "challenges_tagged_users_userId_users_id_fk": {
+          "name": "challenges_tagged_users_userId_users_id_fk",
+          "tableFrom": "challenges_tagged_users",
+          "tableTo": "users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "__new_stubs_to_stories": {
+      "name": "__new_stubs_to_stories",
+      "columns": {
+        "postId": {
+          "autoincrement": false,
+          "name": "postId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "storyId": {
+          "autoincrement": false,
+          "name": "storyId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "__new_stubs_to_stories_postId_storyId_pk": {
+          "columns": [
+            "postId",
+            "storyId"
+          ],
+          "name": "__new_stubs_to_stories_postId_storyId_pk"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "__new_stubs_to_stories_storyId_stories_id_fk": {
+          "name": "__new_stubs_to_stories_storyId_stories_id_fk",
+          "tableFrom": "__new_stubs_to_stories",
+          "tableTo": "stories",
+          "columnsFrom": [
+            "storyId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "__new_stubs_to_stories_postId_posts_id_fk": {
+          "name": "__new_stubs_to_stories_postId_posts_id_fk",
+          "tableFrom": "__new_stubs_to_stories",
+          "tableTo": "posts",
+          "columnsFrom": [
+            "postId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}
