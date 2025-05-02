@@ -4,7 +4,7 @@
     <NewChallengeCard @done="refresh()"></NewChallengeCard>
     <br/>
     <h1>Issued Challenges</h1>
-    <ChallengeCard v-for="challenge in challenges" :challenge="challenge"></ChallengeCard>
+    <ChallengeCard v-for="challenge in challenges" :challenge="challenge" @refresh="refresh"></ChallengeCard>
 	</div>
 </template>
 <script setup lang="ts">

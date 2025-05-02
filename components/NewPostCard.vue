@@ -15,7 +15,9 @@
 	</UCard>
 </template>
 <script setup lang="ts">
-import createPost from '~/composables/createStub';
+import type { PostInsert } from '~/server/db/schema' 
+
+const props = defineProps<{challengeId?: number|null}>()
 
 const newName = ref<string>("")
 const newText = ref<string>("")
@@ -23,9 +25,26 @@ const newText = ref<string>("")
 const { loggedIn, user } = useUserSession()
 
 async function submit() {
-  const result = await createPost(newName.value, newText.value, user.value.id)
-  console.log(result)
+  const relatedChallengeIds = []
+  if (props.challengeId) {
+    relatedChallengeIds.push(props.challengeId)
+  }
+  const post = {
+    authorId: user.value?.id,
+    name: newName.value,
+    text: newText.value,
+    challengeIds: relatedChallengeIds
+  } as PostInsert
+  const result = await $fetch("/api/posts",{
+    method:"POST",
+    body: post
+  })
+  emit("done")
 }
+
+const emit = defineEmits<{
+  done: []
+}>()
 
 </script>
 

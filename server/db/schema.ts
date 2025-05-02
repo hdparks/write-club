@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { int, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { int, integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const users = sqliteTable("users", {
   id: int().primaryKey({ autoIncrement: true }),
@@ -30,21 +30,23 @@ export const challengeRelations = relations(challenges, ({many, one}) => ({
   challenger: one(users, {
     fields: [challenges.challengerId],
     references: [users.id]
-  })
+  }),
+  challengesPosts: many(challengesPosts)
 }))
 export type ChallengeRelations = {
-  challengeTaggedUsers: ChallengeTaggedUser[],
-  challenger: User
+  challengeTaggedUsers: (ChallengeTaggedUser & ChallengeTaggedUserRelations)[],
+  challenger: User,
+  challengesPosts: (ChallengePost & ChallengePostRelations)[]
 }
 
 export const challengeTaggedUsers = sqliteTable("challenges_tagged_users", {
-  userId: int().references(() => users.id),
-  challengeId: int().references(() => challenges.id),
+  userId: int().notNull().references(() => users.id),
+  challengeId: int().notNull().references(() => challenges.id),
 },
   (t) => [primaryKey({columns: [t.userId, t.challengeId]})],
 )
 
-export type ChallengeTaggedUser = typeof challengeTaggedUsers.$inferSelect
+export type ChallengeTaggedUser = typeof challengeTaggedUsers.$inferSelect 
 export type ChallengeTaggedUserInsert = typeof challengeTaggedUsers.$inferInsert
 
 export const challengeTaggedUsersRelations = relations(challengeTaggedUsers, ({one}) => ({
@@ -57,18 +59,10 @@ export const challengeTaggedUsersRelations = relations(challengeTaggedUsers, ({o
     references: [challenges.id]
   })
 }))
-
-export const stories = sqliteTable("stories", {
-  id: int().primaryKey({ autoIncrement: true }),
-  name: text().notNull(),
-})
-
-export type Story = typeof stories.$inferSelect
-export type StoryInsert = typeof stories.$inferInsert
-
-export const storiesRelations = relations(stories, ({many}) => ({
-  postsToStories: many(postsToStories)
-}))
+export type ChallengeTaggedUserRelations = {
+  user: User,
+  challenge: Challenge
+}
 
 export const posts = sqliteTable("posts", {
   id: int().primaryKey({autoIncrement: true}),
@@ -81,35 +75,35 @@ export type Post = typeof posts.$inferSelect
 export type PostInsert = typeof posts.$inferInsert
 
 export const postsRelations = relations(posts, ({many, one}) => ({
-  stubsToStories: many(postsToStories),
   author: one(users, {
     fields: [posts.authorId],
     references: [users.id]
-  })
+  }),
+  postsChallenges: many(challengesPosts)
 }))
 
-export const postsToStories = sqliteTable(
-  'posts_to_stories',
-  {
-    postId: int()
-      .notNull()
-      .references(() => posts.id),
-    storyId: int()
-      .notNull()
-      .references(() => stories.id)
-  },
-  (t) => [
-    primaryKey({columns: [t.postId, t.storyId]})
-  ]
-)
+export const challengesPosts = sqliteTable("challenges_posts", {
+  postId: int().notNull().references(() => posts.id),
+  challengeId: int().notNull().references(() => challenges.id)
+}, (table) => [
+  primaryKey({columns: [table.postId, table.challengeId], name: "challenges_posts_postId_challengeId_pk"})
+]);
 
-export const postsToStoriesRelations = relations(postsToStories, ({one}) => ({
+export type ChallengePost = typeof challengesPosts.$inferSelect
+export type ChallengePostInsert = typeof challengesPosts.$inferInsert
+
+export const challengesPostsRelations = relations(challengesPosts, ({one}) => ({
   post: one(posts, {
-    fields: [postsToStories.postId],
+    fields: [challengesPosts.postId],
     references: [posts.id]
   }),
-  story: one(stories, {
-    fields: [postsToStories.storyId],
-    references: [stories.id]
+  challenge: one(challenges, {
+    fields: [challengesPosts.challengeId],
+    references: [challenges.id]
   })
 }))
+
+export type ChallengePostRelations = {
+  post: Post
+  challenge: Challenge
+}

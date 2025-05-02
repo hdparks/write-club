@@ -44,10 +44,10 @@ const navigationItems = computed<NavigationMenuItem[][]>(() => {
       active: route.path == "/",
       onSelect: async () => await navigateTo("/")
     },{
-      label: "Challenges",
+      label: "Inbox",
       icon: "i-lucide:inbox",
-      active: route.path == "/challenges",
-      onSelect: async() => await navigateTo("/challenges")
+      active: route.path == "/inbox",
+      onSelect: async() => await navigateTo("/inbox")
     },{
       label: "Outbox",
       icon: "i-lucide:send",
@@ -61,4 +61,5 @@ const navigationItems = computed<NavigationMenuItem[][]>(() => {
     }]]
   return sections
 })
+
 </script>

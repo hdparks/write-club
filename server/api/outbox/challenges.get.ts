@@ -7,7 +7,16 @@ export default defineEventHandler(async (event) => {
           user: true
         }
       },
-      challenger: true
+      challenger: true,
+      challengesPosts: {
+        with: {
+          post: {
+            with: {
+              author: true
+            }
+          }
+        }
+      }
     },
     where: (challenge, {eq}) => eq(challenge.challengerId, user!.id),
     orderBy: (challenge, {desc}) => desc(challenge.id)

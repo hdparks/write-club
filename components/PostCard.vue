@@ -1,16 +1,17 @@
 <template>
 	<UCard class="w-full">
     <template #header>
-      {{stub?.name}}
+      <div class="flex flex-row justify-between">
+        <div>{{post.name}}</div> 
+        <UserAvatar :user="post.author"></UserAvatar>
+      </div>
     </template>
-    {{stub?.text}}
+    <div>{{post.text}}</div>
 	</UCard>
 </template>
 <script setup lang="ts">
-import type { Stub } from '~/server/db/schema';
+import type { PostModel } from './PostModel';
 
-const route = useRoute()
-console.log(route)
-const {data:stub} = await useFetch<Stub>(`/api/stubs/${route.params.id as string}`)
+defineProps<{post: PostModel}>()
 </script>
 
